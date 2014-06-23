@@ -6,11 +6,12 @@ from abc import ABCMeta, abstractmethod
 
 import numpy as np
 from scipy.sparse import csr_matrix, issparse
-from sklearn.base import BaseEstimator
+from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.neighbors.classification import KNeighborsClassifier
 
 from sklearn.utils import safe_asarray, atleast2d_or_csr, check_arrays
 from sklearn.externals import six
+
 
 class InstanceReductionWarning(UserWarning):
     pass
@@ -20,6 +21,7 @@ warnings.simplefilter("always", InstanceReductionWarning)
 
 
 class InstanceReductionBase(six.with_metaclass(ABCMeta, BaseEstimator)):
+
     """Base class for instance reduction estimators."""
 
     @abstractmethod
@@ -27,8 +29,34 @@ class InstanceReductionBase(six.with_metaclass(ABCMeta, BaseEstimator)):
         pass
 
 
-class InstanceReductionMixin(InstanceReductionBase):
+class InstanceReductionMixin(InstanceReductionBase, ClassifierMixin):
+
     """Mixin class for all instance reduction techniques"""
+
+
+    def set_classifier(self):
+        """Sets the classified to be used in the instance reduction process
+            and classification.
+
+        Parameters
+        ----------
+        classifier : classifier, following the KNeighborsClassifier style
+            (default = KNN)
+
+        y : array-like, shape = [n_samples]
+            Labels for X.
+
+        Returns
+        -------
+        P : array-like, shape = [indeterminated, n_features]
+            Resulting training set.
+
+        q : array-like, shape = [indertaminated]
+            Labels for P
+        """
+
+        self.classifier = classifier
+
 
     def reduce_data(self, X, y):
         """Perform the instance reduction procedure on the given training data.
@@ -43,14 +71,13 @@ class InstanceReductionMixin(InstanceReductionBase):
 
         Returns
         -------
-        P : array-like, shape = [indeterminated, n_features]
+        X_ : array-like, shape = [indeterminated, n_features]
             Resulting training set.
-        
-        q : array-like, shape = [indertaminated]
-            Labels for P
+
+        y_ : array-like, shape = [indertaminated]
+            Labels for X_
         """
         pass
-
 
     def fit(self, X, y, reduce_data=True):
         """
@@ -64,17 +91,17 @@ class InstanceReductionMixin(InstanceReductionBase):
             Note that centroid shrinking cannot be used with sparse matrices.
         y : array, shape = [n_samples]
             Target values (integers)
-	reduce_data : bool, flag indicating if the reduction would be performed
+        reduce_data : bool, flag indicating if the reduction would be performed
         """
-	self.X = X
-	self.y = y
-	
-	if reduce_data:
-		self.reduce(X, y)
+        self.X = X
+        self.y = y
+
+        if reduce_data:
+            self.reduce_data(X, y)
 
         return self
 
-    def predict(self, X, n_neighbors = 1):
+    def predict(self, X, n_neighbors=1):
         """Perform classification on an array of test vectors X.
 
         The predicted class C for each sample in X is returned.
@@ -89,18 +116,20 @@ class InstanceReductionMixin(InstanceReductionBase):
 
         Notes
         -----
-	The default prediction is using KNeighborsClassifier, if the
-	instance reducition algorithm is to be performed with another
-	classifier, it should be explicited overwritten and explained
-	in the documentation.
+        The default prediction is using KNeighborsClassifier, if the
+        instance reducition algorithm is to be performed with another
+        classifier, it should be explicited overwritten and explained
+        in the documentation.
         """
         X = atleast2d_or_csr(X)
-        if not hasattr(self, "prototypes_") or self.prototypes_ == None:
+        if not hasattr(self, "X_") or self.X_ is None:
             raise AttributeError("Model has not been trained yet.")
-        #return self.labels_[pairwise_distances(
-        #    X, self.prototypes_, metric=self.metric).argmin(axis=1)]
-        knn = KNeighborsClassifier(n_neighbors = n_neighbors)
-        knn.fit(self.prototypes_, self.labels_)
-        return knn.predict(X)
 
+        if not hasattr(self, "y_") or self.y_ is None:
+            raise AttributeError("Model has not been trained yet.")
 
+        if self.classifier == None:
+            self.classifier = KNeighborsClassifier(n_neighbors=n_neighbors)
+
+        self.classifier.fit(self.X_, self.y_)
+        return self.classifier.predict(X)
