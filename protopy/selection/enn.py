@@ -41,7 +41,7 @@ class ENN(InstanceReductionMixin):
 
     Examples
     --------
-    >>> from protopy.selection import ENN
+    >>> from protopy.selection.enn import ENN
     >>> import numpy as np
     >>> X = np.array([[-1, 0], [-0.8, 1], [-0.8, -1], [-0.5, 0] , [0.5, 0], [1, 0], [0.8, 1], [0.8, -1]])
     >>> y = np.array([1, 1, 1, 2, 1, 2, 2, 2])
@@ -90,3 +90,8 @@ class ENN(InstanceReductionMixin):
         self.y_ = np.asarray(y[mask])
         self.reduction_ = 1.0 - float(len(self.y_)) / len(y)
         return self.X_, self.y_
+
+
+    def predict_proba(self, X):
+        return self.classifier.predict_proba(X)
+
