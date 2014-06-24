@@ -41,17 +41,19 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.lda import LDA
 from sklearn.qda import QDA
 from protopy.selection.enn import ENN
+from protopy.selection.cnn import CNN
 
 h = .02  # step size in the mesh
 
 #names = ["Nearest Neighbors", "Linear SVM", "RBF SVM", "Decision Tree",
 #         "Random Forest", "AdaBoost", "Naive Bayes", "LDA", "QDA"]
-names = ["KNN", "ENN"]
+names = ["KNN", "ENN", "CNN"]
 
 
 classifiers = [
     KNeighborsClassifier(3),
-    ENN()]
+    ENN(),
+    CNN(n_neighbors=3)]
 '''
     SVC(kernel="linear", C=0.025),
     SVC(gamma=2, C=1),
