@@ -42,18 +42,20 @@ from sklearn.lda import LDA
 from sklearn.qda import QDA
 from protopy.selection.enn import ENN
 from protopy.selection.cnn import CNN
+from protopy.selection.renn import RENN
 
 h = .02  # step size in the mesh
 
 #names = ["Nearest Neighbors", "Linear SVM", "RBF SVM", "Decision Tree",
 #         "Random Forest", "AdaBoost", "Naive Bayes", "LDA", "QDA"]
-names = ["KNN", "ENN", "CNN"]
+names = ["KNN", "ENN", "CNN", "RENN"]
 
 
 classifiers = [
     KNeighborsClassifier(3),
-    ENN(),
-    CNN(n_neighbors=3)]
+    ENN(n_neighbors=3),
+    CNN(n_neighbors=3),
+    RENN(n_neighbors=3)]
 '''
     SVC(kernel="linear", C=0.025),
     SVC(gamma=2, C=1),
