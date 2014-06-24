@@ -133,3 +133,24 @@ class InstanceReductionMixin(InstanceReductionBase, ClassifierMixin):
 
         self.classifier.fit(self.X_, self.y_)
         return self.classifier.predict(X)
+
+
+    def predict_proba(self, X):
+        """Return probability estimates for the test data X.
+        after a given prototype selection algorithm.
+    
+        Parameters
+        ----------
+        X : array, shape = (n_samples, n_features)
+            A 2-D array representing the test points.
+        
+        Returns
+        -------
+        p : array of shape = [n_samples, n_classes], or a list of n_outputs
+        of such arrays if n_outputs > 1.
+        The class probabilities of the input samples. Classes are ordered
+        by lexicographic order.
+        """
+        self.classifier.fit(self.X_, self.y_)
+        return self.classifier.predict_proba(X)
+

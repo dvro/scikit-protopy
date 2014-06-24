@@ -91,7 +91,3 @@ class ENN(InstanceReductionMixin):
         self.reduction_ = 1.0 - float(len(self.y_)) / len(y)
         return self.X_, self.y_
 
-
-    def predict_proba(self, X):
-        return self.classifier.predict_proba(X)
-
