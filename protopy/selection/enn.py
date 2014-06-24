@@ -21,8 +21,8 @@ class ENN(InstanceReductionMixin):
 
     """Edited Nearest Neighbors.
 
-    The Edited Nearest Neighbors  removes the instances in de boundaries,
-    maintaining redudant samples.
+    The Edited Nearest Neighbors  removes the instances in de 
+    boundaries, maintaining redudant samples.
 
     Parameters
     ----------
@@ -72,6 +72,8 @@ class ENN(InstanceReductionMixin):
     def reduce_data(self, X, y):
         if self.classifier == None:
             self.classifier = KNeighborsClassifier(n_neighbors=self.n_neighbors)
+        if self.classifier.n_neighbors != self.n_neighbors:
+            self.classifier.n_neighbors = self.n_neighbors
 
         X, y = check_arrays(X, y, sparse_format="csr")
 

@@ -4,15 +4,16 @@ import matplotlib.pyplot as plt
 from protopy.selection.enn import ENN
 from protopy.selection.cnn import CNN
 from protopy.selection.renn import RENN
+from protopy.selection.allknn import AllKNN
 
-f, subfig = plt.subplots(4)
+f, subfig = plt.subplots(5)
 
 
 
 mu1 = [4, 5]
 si1 = [[0.75, 0.25], [0.25, 0.75]]
 
-mu2 = [6, 5]
+mu2 = [5, 5]
 si2 = [[0.25, 0.75], [0.75, 0.25]]
 
 samples = 100
@@ -47,5 +48,10 @@ subfig[3].plot(X_[y_==0].T[0], X_[y_==0].T[1], 'bs', X_[y_==1].T[0], X_[y_==1].T
 subfig[3].axis([0, 10, 0, 10])
 subfig[3].set_title('RENN')
 
+allKNN = AllKNN()
+X_, y_ = allKNN.reduce_data(X, y)
+subfig[4].plot(X_[y_==0].T[0], X_[y_==0].T[1], 'bs', X_[y_==1].T[0], X_[y_==1].T[1],'ro')
+subfig[4].axis([0, 10, 0, 10])
+subfig[4].set_title('AllKNN')
 
 plt.show()
