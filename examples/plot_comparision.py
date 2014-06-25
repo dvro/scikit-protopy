@@ -44,12 +44,13 @@ from protopy.selection.enn import ENN
 from protopy.selection.cnn import CNN
 from protopy.selection.renn import RENN
 from protopy.selection.allknn import AllKNN
+from protopy.selection.tomek_links import TomekLinks
 
 h = .02  # step size in the mesh
 
 #names = ["Nearest Neighbors", "Linear SVM", "RBF SVM", "Decision Tree",
 #         "Random Forest", "AdaBoost", "Naive Bayes", "LDA", "QDA"]
-names = ["KNN", "ENN", "CNN", "RENN", "AllKNN"]
+names = ["KNN", "ENN", "CNN", "RENN", "AllKNN", "Tomek Links"]
 
 
 classifiers = [
@@ -57,7 +58,8 @@ classifiers = [
     ENN(n_neighbors=3),
     CNN(n_neighbors=3),
     RENN(n_neighbors=3),
-    AllKNN(n_neighbors=3)]
+    AllKNN(n_neighbors=3),
+    TomekLinks(n_neighbors=3)]
 '''
     SVC(kernel="linear", C=0.025),
     SVC(gamma=2, C=1),
