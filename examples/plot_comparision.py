@@ -45,12 +45,13 @@ from protopy.selection.cnn import CNN
 from protopy.selection.renn import RENN
 from protopy.selection.allknn import AllKNN
 from protopy.selection.tomek_links import TomekLinks
+from protopy.generation.sgp import SGP
 
 h = .02  # step size in the mesh
 
 #names = ["Nearest Neighbors", "Linear SVM", "RBF SVM", "Decision Tree",
 #         "Random Forest", "AdaBoost", "Naive Bayes", "LDA", "QDA"]
-names = ["KNN", "ENN", "CNN", "RENN", "AllKNN", "Tomek Links"]
+names = ["KNN", "ENN", "CNN", "RENN", "AllKNN", "Tomek Links", "SGP"]
 
 
 classifiers = [
@@ -59,7 +60,8 @@ classifiers = [
     CNN(n_neighbors=3),
     RENN(n_neighbors=3),
     AllKNN(n_neighbors=3),
-    TomekLinks(n_neighbors=3)]
+    TomekLinks(n_neighbors=1),
+    SGP(r_min=0.05, r_mis=0.05)]
 '''
     SVC(kernel="linear", C=0.025),
     SVC(gamma=2, C=1),
@@ -114,6 +116,10 @@ for ds in datasets:
         ax = pl.subplot(len(datasets), len(classifiers) + 1, i)
         clf.fit(X_train, y_train)
         score = clf.score(X_test, y_test)
+        red = 0.0
+        if  hasattr(clf, 'reduction_') and clf.reduction_ != None:
+            red = clf.reduction_
+        
 
         # Plot the decision boundary. For that, we will assign a color to each
         # point in the mesh [x_min, m_max]x[y_min, y_max].
@@ -137,7 +143,7 @@ for ds in datasets:
         ax.set_xticks(())
         ax.set_yticks(())
         ax.set_title(name)
-        ax.text(xx.max() - .3, yy.min() + .3, ('%.2f' % score).lstrip('0'),
+        ax.text(xx.max() - .3, yy.min() + .3, 'S:' + ('%.2f' % score).lstrip('0') + '  R:' + ('%.2f' % red).lstrip('0'),
                 size=15, horizontalalignment='right')
         i += 1
 
