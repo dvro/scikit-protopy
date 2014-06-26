@@ -5,8 +5,9 @@ from protopy.selection.enn import ENN
 from protopy.selection.cnn import CNN
 from protopy.selection.renn import RENN
 from protopy.selection.allknn import AllKNN
+from protopy.selection.tomek_links import TomekLinks
 
-f, subfig = plt.subplots(5)
+f, subfig = plt.subplots(3,2)
 
 
 
@@ -26,32 +27,21 @@ X = np.vstack((X1, X2))
 y = np.asarray([0] * samples + [1] * samples)
 
 
-subfig[0].plot(X[y==0].T[0], X[y==0].T[1], 'bs', X[y==1].T[0], X[y==1].T[1],'ro')
-subfig[0].axis([0, 10, 0, 10])
-subfig[0].set_title('Original Dataset')
+algorithms = [ENN(), RENN(), AllKNN(), TomekLinks(), CNN()]
+titles = ['ENN','RENN', 'AllKNN', 'TomekLinks', 'CNN' ]
+index = 0
 
-editednn = ENN()
-X_, y_ = editednn.reduce_data(X, y)
-subfig[1].plot(X_[y_==0].T[0], X_[y_==0].T[1], 'bs', X_[y_==1].T[0], X_[y_==1].T[1],'ro')
-subfig[1].axis([0, 10, 0, 10])
-subfig[1].set_title('ENN')
-
-condensednn = CNN()
-X_, y_ = condensednn.reduce_data(X, y)
-subfig[2].plot(X_[y_==0].T[0], X_[y_==0].T[1], 'bs', X_[y_==1].T[0], X_[y_==1].T[1],'ro')
-subfig[2].axis([0, 10, 0, 10])
-subfig[2].set_title('CNN')
-
-renn = RENN()
-X_, y_ = renn.reduce_data(X, y)
-subfig[3].plot(X_[y_==0].T[0], X_[y_==0].T[1], 'bs', X_[y_==1].T[0], X_[y_==1].T[1],'ro')
-subfig[3].axis([0, 10, 0, 10])
-subfig[3].set_title('RENN')
-
-allKNN = AllKNN()
-X_, y_ = allKNN.reduce_data(X, y)
-subfig[4].plot(X_[y_==0].T[0], X_[y_==0].T[1], 'bs', X_[y_==1].T[0], X_[y_==1].T[1],'ro')
-subfig[4].axis([0, 10, 0, 10])
-subfig[4].set_title('AllKNN')
+for i in range(3):
+    for j in range(2):
+        if i == 0 and j == 0:
+            subfig[i][j].plot(X[y==0].T[0], X[y==0].T[1], 'bs', X[y==1].T[0], X[y==1].T[1],'ro')
+            subfig[i][j].axis([0, 10, 0, 10])
+            subfig[i][j].set_title('Original Dataset')
+        elif index < len(algorithms):
+            X_, y_ = algorithms[index].reduce_data(X, y)
+            subfig[i][j].plot(X_[y_==0].T[0], X_[y_==0].T[1], 'bs', X_[y_==1].T[0], X_[y_==1].T[1],'ro')
+            subfig[i][j].axis([0, 10, 0, 10])
+            subfig[i][j].set_title(titles[index])
+            index = index + 1
 
 plt.show()
