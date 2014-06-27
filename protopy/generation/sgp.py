@@ -273,4 +273,34 @@ class SGP2(SGP):
         self.groups = None
         self.pos_label = pos_label
 
+    def merge(self):
+
+        if len(self.groups) < 2:
+            return self.groups
+
+        merged = False
+        for group in self.groups:
+            reps_x = np.asarray([g.rep_x for g in self.groups])
+            reps_y = np.asarray([g.label for g in self.groups])
+            self.classifier.fit(reps_x, reps_y)
+
+            nn2_idx = self.classifier.kneighbors(group.X, n_neighbors=2, return_distance=False)
+            nn2_idx = nn2_idx.T[1]
+
+            # could use a threshold
+            if len(set(nn2_idx)) == 1 and reps_y[nn2_idx[0]] == group.label:
+                ng_group = self.groups[nn2_idx[0]]
+                ng2_idx = self.classifier.kneighbors(ng_group.X, n_neighbors=2, return_distance=False)
+                ng2_idx = ng2_idx.T[1]
+                if len(set(ng2_idx)) == 1 and self.groups[ng2_idx[0]] == group:
+                    group.add_instances(ng_group.X, update=True)
+                    self.groups.remove(ng_group)
+                    merged = True
+                
+        if merged:
+            self.merge()
+
+        return self.groups
+
+
 
