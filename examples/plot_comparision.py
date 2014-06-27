@@ -45,13 +45,13 @@ from protopy.selection.cnn import CNN
 from protopy.selection.renn import RENN
 from protopy.selection.allknn import AllKNN
 from protopy.selection.tomek_links import TomekLinks
-from protopy.generation.sgp import SGP
+from protopy.generation.sgp import SGP, SGP2
 
 h = .02  # step size in the mesh
 
 #names = ["Nearest Neighbors", "Linear SVM", "RBF SVM", "Decision Tree",
 #         "Random Forest", "AdaBoost", "Naive Bayes", "LDA", "QDA"]
-names = ["KNN", "ENN", "CNN", "RENN", "AllKNN", "Tomek Links", "SGP"]
+names = ["KNN", "ENN", "CNN", "RENN", "AllKNN", "Tomek Links", "SGP", "SGP2"]
 
 
 classifiers = [
@@ -61,7 +61,8 @@ classifiers = [
     RENN(n_neighbors=3),
     AllKNN(n_neighbors=3),
     TomekLinks(n_neighbors=1),
-    SGP(r_min=0.05, r_mis=0.05)]
+    SGP(r_min=0.05, r_mis=0.05),
+    SGP2(r_min=0.05, r_mis=0.05)]
 '''
     SVC(kernel="linear", C=0.025),
     SVC(gamma=2, C=1),
