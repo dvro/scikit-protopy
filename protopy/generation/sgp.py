@@ -303,4 +303,38 @@ class SGP2(SGP):
         return self.groups
 
 
+    def pruning(self):
+
+        if len(self.groups) < 2:
+            return self.groups
+
+        pruned, fst = False, True
+        knn = KNeighborsClassifier(n_neighbors = 1, algorithm='brute')
+        
+        while pruned or fst:
+            index = 0
+            pruned, fst = False, False
+
+            while index < len(self.groups):
+                group = self.groups[index]
+
+                mask = np.ones(len(self.groups), dtype=bool)
+                mask[index] = False
+                reps_x = np.asarray([g.rep_x for g in self.groups])[mask]
+                reps_y = np.asarray([g.label for g in self.groups])[mask]
+                labels = knn.fit(reps_x, reps_y).predict(group.X)
+
+                if (labels == group.label).all():
+                    self.groups.remove(group)
+                    pruned = True
+                else:
+                    index = index + 1
+
+                if len(self.groups) == 1:
+                    index = len(self.groups)
+                    pruned = False
+
+        return self.groups
+            
+
 
