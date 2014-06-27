@@ -89,6 +89,16 @@ class SGP(InstanceReductionMixin):
     >>> print sgp.reduction_
     0.5
 
+    Attributes
+    ----------
+    `X_` : array-like, shape = [indeterminated, n_features]
+        Selected prototypes.
+
+    `y_` : array-like, shape = [indeterminated]
+        Labels of the selected prototypes.
+
+    `reduction_` : float, percentual of reduction.
+
     See also
     --------
     protopy.generation.sgp.SGP2: self-generating prototypes 2
@@ -202,5 +212,65 @@ class SGP(InstanceReductionMixin):
                 self.groups.remove(group)
         return self.groups
 
+
+class SGP2(SGP):
+    """Self-Generating Prototypes 2
+
+    The Self-Generating Prototypes 2 is the second version of the
+    Self-Generating Prototypes algorithm.
+    It has a higher generalization power, including the procedures
+    merge and pruning.
+
+    Parameters
+    ----------
+    r_min: float, optional (default = 0.0)
+        Determine the minimum size of a cluster [0.00, 0.20]
+
+    r_mis: float, optional (default = 0.0)
+        Determine the error tolerance before split a group
+
+    Attributes
+    ----------
+    `X_` : array-like, shape = [indeterminated, n_features]
+        Selected prototypes.
+
+    `y_` : array-like, shape = [indeterminated]
+        Labels of the selected prototypes.
+
+    `reduction_` : float, percentual of reduction.
+
+    `pos_label` : int, positive class label, the minority class.
+
+    Examples
+    --------
+    >>> from sklearn.instance_reduction.sgp import SelfGeneratingPrototypes2
+    >>> import numpy as np
+    >>> X = np.array([[i] for i in range(1,13)])
+    >>> X = X + np.asarray([0.1,0,-0.1,0.1,0,-0.1,0.1,-0.1,0.1,-0.1,0.1,-0.1])
+    >>> y = np.array([1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1])
+    >>> sgp2 = SelfGeneratingPrototypes2()
+    >>> sgp2.fit(X, y)
+    SelfGeneratingPrototypes2(r_min=0.0, r_mis=0.0)
+    >>> print sgp2.reduction_
+    0.5
+
+    See also
+    --------
+    sklearn.neighbors.KNeighborsClassifier: nearest neighbors classifier
+    protopy.generation.SGP: self-generating prototypes
+
+    References
+    ----------
+    Hatem A. Fayed, Sherif R Hashem, and Amir F Atiya. Self-generating prototypes
+    for pattern classification. Pattern Recognition, 40(5):1498–1509, 2007.
+    """
+    def __init__(self, r_min=0.0, r_mis=0.0, pos_label=None):
+        self.groups = None
+        self.r_min = r_min
+        self.r_mis = r_mis
+        self.n_neighbors = 1
+        self.classifier = None
+        self.groups = None
+        self.pos_label = pos_label
 
 
