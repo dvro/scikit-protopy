@@ -135,8 +135,8 @@ class SGP(InstanceReductionMixin):
             mask = y == label
             self.groups = self.groups + [_Group(X[mask], label)]
 
-        self.__main_loop()
-        self.__generalization_step()
+        self._main_loop()
+        self._generalization_step()
 
         self.X_ = np.asarray([g.rep_x for g in self.groups])
         self.y_ = np.asarray([g.label for g in self.groups])
@@ -144,7 +144,7 @@ class SGP(InstanceReductionMixin):
 
         return self.X_, self.y_
      
-    def __main_loop(self):
+    def _main_loop(self):
         exit_count = 0
         knn = KNeighborsClassifier(n_neighbors = 1, algorithm='brute')
         while exit_count < len(self.groups):
@@ -205,7 +205,7 @@ class SGP(InstanceReductionMixin):
         return self.groups                     
 
 
-    def __generalization_step(self):
+    def _generalization_step(self):
         larger = max([len(g) for g in self.groups])
         for group in self.groups:
             if len(group) < self.r_min * larger:
@@ -241,14 +241,14 @@ class SGP2(SGP):
 
     Examples
     --------
-    >>> from sklearn.instance_reduction.sgp import SelfGeneratingPrototypes2
+    >>> from protopy.generation.sgp import SGP2
     >>> import numpy as np
     >>> X = np.array([[i] for i in range(1,13)])
     >>> X = X + np.asarray([0.1,0,-0.1,0.1,0,-0.1,0.1,-0.1,0.1,-0.1,0.1,-0.1])
     >>> y = np.array([1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1])
-    >>> sgp2 = SelfGeneratingPrototypes2()
+    >>> sgp2 = SGP2()
     >>> sgp2.fit(X, y)
-    SelfGeneratingPrototypes2(r_min=0.0, r_mis=0.0)
+    SGP2(r_min=0.0, r_mis=0.0)
     >>> print sgp2.reduction_
     0.5
 
@@ -270,7 +270,7 @@ class SGP2(SGP):
         self.classifier = None
         self.groups = None
 
-    def merge(self):
+    def _merge(self):
 
         if len(self.groups) < 2:
             return self.groups
@@ -295,12 +295,12 @@ class SGP2(SGP):
                     merged = True
                 
         if merged:
-            self.merge()
+            self._merge()
 
         return self.groups
 
 
-    def pruning(self):
+    def _pruning(self):
 
         if len(self.groups) < 2:
             return self.groups
@@ -337,6 +337,11 @@ class SGP2(SGP):
     def reduce_data(self, X, y):
         X, y = check_arrays(X, y, sparse_format="csr")
 
+        if self.classifier == None:
+            self.classifier = KNeighborsClassifier(n_neighbors=self.n_neighbors)
+        if self.classifier.n_neighbors != self.n_neighbors:
+            self.classifier.n_neighbors = self.n_neighbors
+
         classes = np.unique(y)
         self.classes_ = classes
 
@@ -344,15 +349,15 @@ class SGP2(SGP):
         self.groups = []
         for label in classes:
             mask = y == label
-            self.groups = self.groups + [Group(X[mask], label)]
+            self.groups = self.groups + [_Group(X[mask], label)]
 
-        self.main_loop()
-        self.generalization_step()
-        self.merge()
-        self.pruning()
+        self._main_loop()
+        self._generalization_step()
+        self._merge()
+        self._pruning()
         self.X_ = np.asarray([g.rep_x for g in self.groups])
         self.y_ = np.asarray([g.label for g in self.groups])
-        self.reduction_ = 1.0 - float(len(self.labels_))/len(y)
+        self.reduction_ = 1.0 - float(len(self.y_))/len(y)
         return self.X_, self.y_
  
 
