@@ -17,6 +17,36 @@ from sklearn.decomposition import PCA
 
 from ..base import InstanceReductionMixin
 
+class _Group(object):
+
+    def __init__(self, X, label):
+        self.X = X
+        self.label = label
+        if len(X) > 0:
+            self.update_all()
+
+    def __add__(self, other):
+        X = np.vstack((self.X, other.X))
+        return _Group(X, self.label, update=True)
+
+    def __len__(self):
+        length = self.X.shape[0] if self.X != None else 0
+        return length
+
+    def add_instances(self, X, update=False):
+        self.X = np.vstack((self.X,X))
+        if update:
+            self.update_all()
+
+    def remove_instances(self, indexes, update=False):
+        _X = self.X[indexes]
+        self.X = np.delete(self.X, indexes, axis=0)
+        if update:
+            self.update_all()
+        return _X
+
+    def update_all(self):
+        self.rep_x = np.mean(self.X, axis=0)
 
 class SGP(InstanceReductionMixin):
     """Self-Generating Prototypes
@@ -171,38 +201,6 @@ class SGP(InstanceReductionMixin):
             if len(group) < self.r_min * larger:
                 self.groups.remove(group)
         return self.groups
-
-
-class _Group(object):
-
-    def __init__(self, X, label):
-        self.X = X
-        self.label = label
-        if len(X) > 0:
-            self.update_all()
-
-    def __add__(self, other):
-        X = np.vstack((self.X, other.X))
-        return _Group(X, self.label, update=True)
-
-    def __len__(self):
-        length = self.X.shape[0] if self.X != None else 0
-        return length
-
-    def add_instances(self, X, update=False):
-        self.X = np.vstack((self.X,X))
-        if update:
-            self.update_all()
-
-    def remove_instances(self, indexes, update=False):
-        _X = self.X[indexes]
-        self.X = np.delete(self.X, indexes, axis=0)
-        if update:
-            self.update_all()
-        return _X
-
-    def update_all(self):
-        self.rep_x = np.mean(self.X, axis=0)
 
 
 
