@@ -239,8 +239,6 @@ class SGP2(SGP):
 
     `reduction_` : float, percentual of reduction.
 
-    `pos_label` : int, positive class label, the minority class.
-
     Examples
     --------
     >>> from sklearn.instance_reduction.sgp import SelfGeneratingPrototypes2
@@ -264,14 +262,13 @@ class SGP2(SGP):
     Hatem A. Fayed, Sherif R Hashem, and Amir F Atiya. Self-generating prototypes
     for pattern classification. Pattern Recognition, 40(5):1498–1509, 2007.
     """
-    def __init__(self, r_min=0.0, r_mis=0.0, pos_label=None):
+    def __init__(self, r_min=0.0, r_mis=0.0):
         self.groups = None
         self.r_min = r_min
         self.r_mis = r_mis
         self.n_neighbors = 1
         self.classifier = None
         self.groups = None
-        self.pos_label = pos_label
 
     def merge(self):
 
@@ -337,4 +334,25 @@ class SGP2(SGP):
         return self.groups
             
 
+    def reduce_data(self, X, y):
+        X, y = check_arrays(X, y, sparse_format="csr")
+
+        classes = np.unique(y)
+        self.classes_ = classes
+
+        # loading inicial groups
+        self.groups = []
+        for label in classes:
+            mask = y == label
+            self.groups = self.groups + [Group(X[mask], label)]
+
+        self.main_loop()
+        self.generalization_step()
+        self.merge()
+        self.pruning()
+        self.X_ = np.asarray([g.rep_x for g in self.groups])
+        self.y_ = np.asarray([g.label for g in self.groups])
+        self.reduction_ = 1.0 - float(len(self.labels_))/len(y)
+        return self.X_, self.y_
+ 
 
