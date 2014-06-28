@@ -20,8 +20,12 @@ project anytime soon.
 Dependencies
 ============
 
-This is designed to work with Python 2.6+, scikit-learn >= 0.14.1,
-Numpy >= 1.3, SciPy >= 0.7, Matplotlib >= 0.99.1.
+This is designed to work with:
+- Python 2.6+
+- scikit-learn >= 0.14.1
+- Numpy >= 1.3
+- SciPy >= 0.7
+- Matplotlib >= 0.99.1. (for examples, only)
 
 
 Install
@@ -33,7 +37,7 @@ Important References
 ====================
 
 For all algorithms a reference is provided. But if you are new to
-PS/PG, we recommend the following articles:
+PS/PG, we recommend the following papers:
 
 - **Prototype Selection**: Garcia, Salvador, et al. "Prototype selection for nearest neighbor classification: Taxonomy and empirical study." Pattern Analysis and Machine Intelligence, IEEE Transactions on 34.3 (2012): 417-435.
 
