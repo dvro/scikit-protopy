@@ -27,3 +27,19 @@ Numpy >= 1.3, SciPy >= 0.7, Matplotlib >= 0.99.1.
 Install
 =======
 TODO
+
+
+Important References
+====================
+
+For all algorithms a reference is provided. But if you are new to
+PS/PG, we recommend the following articles:
+
+- **Prototype Selection**: Garcia, Salvador, et al. "Prototype selection for nearest neighbor classification: Taxonomy and empirical study." Pattern Analysis and Machine Intelligence, IEEE Transactions on 34.3 (2012): 417-435.
+
+- **Prototype Generation**: Triguero, Isaac, et al. "A taxonomy and experimental study on prototype generation for nearest neighbor classification." Systems, Man, and Cybernetics, Part C: Applications and Reviews, IEEE Transactions on 42.1 (2012): 86-100.
+
+
+
+
+
