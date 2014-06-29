@@ -254,7 +254,6 @@ class SGP2(SGP):
 
     See also
     --------
-    sklearn.neighbors.KNeighborsClassifier: nearest neighbors classifier
     protopy.generation.SGP: self-generating prototypes
 
     References
@@ -269,6 +268,34 @@ class SGP2(SGP):
         self.n_neighbors = 1
         self.classifier = None
         self.groups = None
+
+
+    def reduce_data(self, X, y):
+        X, y = check_arrays(X, y, sparse_format="csr")
+
+        if self.classifier == None:
+            self.classifier = KNeighborsClassifier(n_neighbors=self.n_neighbors)
+        if self.classifier.n_neighbors != self.n_neighbors:
+            self.classifier.n_neighbors = self.n_neighbors
+
+        classes = np.unique(y)
+        self.classes_ = classes
+
+        # loading inicial groups
+        self.groups = []
+        for label in classes:
+            mask = y == label
+            self.groups = self.groups + [_Group(X[mask], label)]
+
+        self._main_loop()
+        self._generalization_step()
+        self._merge()
+        self._pruning()
+        self.X_ = np.asarray([g.rep_x for g in self.groups])
+        self.y_ = np.asarray([g.label for g in self.groups])
+        self.reduction_ = 1.0 - float(len(self.y_))/len(y)
+        return self.X_, self.y_
+
 
     def _merge(self):
 
@@ -334,6 +361,84 @@ class SGP2(SGP):
         return self.groups
             
 
+
+
+
+class ASGP(SGP2):
+    """Adaptive Self-Generating Prototypes
+
+    The Adaptive Self-Generating Prototypes (ASGP) is a derivate of the
+    Self-Generating Prototypes, specially designed to cope with imbalanced
+    datasets. The ASGP is a centroid-based prototype generation algorithm 
+    that uses the space spliting mechanism to generate prototypes in the 
+    center of each cluster.
+
+    Parameters
+    ----------
+
+    r_min: float, optional (default = 0.0)
+        Determine the minimum size of a cluster [0.00, 0.20]
+
+    r_mis: float, optional (default = 0.0)
+        Determine the error tolerance before split a group
+
+    pos_class: int, optional (default = None)
+        Determine the error tolerance before split a group
+
+    Attributes
+    ----------
+    `X_` : array-like, shape = [indeterminated, n_features]
+        Selected prototypes.
+
+    `y_` : array-like, shape = [indeterminated]
+        Labels of the selected prototypes.
+
+    `reduction_` : float, percentual of reduction.
+
+    Examples
+    --------
+    >>> from protopy.generation.sgp import ASGP
+    >>> from protopy.generation.sgp import SGP2
+    >>> import numpy as np
+    >>> X = np.array([[i] for i in range(1000)])
+    >>> y = np.asarray(990 * [1] + 10 * [0])
+    >>> asgp = ASGP(r_min=0.2, r_mis=0.2)
+    >>> asgp.fit(X, y)
+    ASGP(r_min=0.2, r_mis=0.2)
+    >>> print list(set(asgp.y_))
+    [0, 1]
+    >>> sgp2 = SGP2(r_min=0.2, r_mis=0.2)
+    >>> sgp2.fit(X, y)
+    SGP2(r_min=0.2, r_mis=0.2)
+    >>> print list(set(sgp2.y_))
+    [1]
+
+    See also
+    --------
+    protopy.generation.sgp.SGP: self-generating prototypes
+    protopy.generation.sgp.SGP2: self-generating prototypes 2
+
+    References
+    ----------
+
+    Dayvid V R Oliveira, Guilherme R Magalhaes, George D C Cavalcanti, and
+    Tsang Ing Ren. Improved self-generating prototypes algorithm for imbalanced
+    datasets. In Tools with Artificial Intelligence (ICTAI), 2012 IEEE 24th 
+    International Conference on, volume 1, pages 904–909. IEEE, 2012.
+
+    Hatem A. Fayed, Sherif R Hashem, and Amir F Atiya. Self-generating prototypes
+    for pattern classification. Pattern Recognition, 40(5):1498–1509, 2007.
+    """
+
+    def __init__(self, r_min=0.0, r_mis=0.0, pos_class=None):
+        self.groups = None
+        self.r_min = r_min
+        self.r_mis = r_mis
+        self.pos_class = pos_class
+        self.classifier = None
+        self.n_neighbors = 1
+
+
     def reduce_data(self, X, y):
         X, y = check_arrays(X, y, sparse_format="csr")
 
@@ -345,6 +450,10 @@ class SGP2(SGP):
         classes = np.unique(y)
         self.classes_ = classes
 
+        minority_class = self.pos_class
+        if self.pos_class == None:
+            minority_class = min(set(y), key = list(y).count)
+
         # loading inicial groups
         self.groups = []
         for label in classes:
@@ -353,11 +462,32 @@ class SGP2(SGP):
 
         self._main_loop()
         self._generalization_step()
+        min_groups = filter(lambda g: g.label == minority_class, self.groups)
         self._merge()
         self._pruning()
+        max_groups = filter(lambda g: g.label != minority_class, self.groups)
+        self.groups = min_groups + max_groups
         self.X_ = np.asarray([g.rep_x for g in self.groups])
         self.y_ = np.asarray([g.label for g in self.groups])
         self.reduction_ = 1.0 - float(len(self.y_))/len(y)
         return self.X_, self.y_
  
+
+    def _generalization_step(self):
+        #larger = max([len(g) for g in self.groups])
+        labels = list(set([g.label for g in self.groups]))
+        larger = {}
+        for group in self.groups:
+            if not group.label in larger:
+                larger[group.label] = len(group)
+            elif len(group) > larger[group.label]:
+                larger[group.label] = len(group)
+
+        for group in self.groups:
+            if len(group) < self.r_min * larger[group.label]:
+                self.groups.remove(group)
+
+        return self.groups
+
+
 
