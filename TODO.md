@@ -9,7 +9,6 @@ Design:
 Algorithms:
 - Steady-State Memetic Algorithm (SSMA)
 - One-Sided Selection (OSS)
-- Adaptive Self-Generating Prototypes (ASGP)
 - Learning Vector Quantization 1, 2.1, 3 (LVQ)
 - Integrated Concept Prototype Learner 1, 2, 3 e 4 (ICPL)
 - Reduction by Space Partioning 1, 2 e 3 (RSP)
