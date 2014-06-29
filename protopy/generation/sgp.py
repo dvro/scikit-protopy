@@ -102,6 +102,7 @@ class SGP(InstanceReductionMixin):
     See also
     --------
     protopy.generation.sgp.SGP2: self-generating prototypes 2
+    protopy.generation.sgp.ASGP: adaptive self-generating prototypes
 
     References
     ----------
@@ -255,6 +256,7 @@ class SGP2(SGP):
     See also
     --------
     protopy.generation.SGP: self-generating prototypes
+    protopy.generation.sgp.ASGP: adaptive self-generating prototypes
 
     References
     ----------
@@ -361,17 +363,15 @@ class SGP2(SGP):
         return self.groups
             
 
-
-
-
 class ASGP(SGP2):
     """Adaptive Self-Generating Prototypes
 
     The Adaptive Self-Generating Prototypes (ASGP) is a derivate of the
     Self-Generating Prototypes, specially designed to cope with imbalanced
-    datasets. The ASGP is a centroid-based prototype generation algorithm 
-    that uses the space spliting mechanism to generate prototypes in the 
-    center of each cluster.
+    datasets. 
+    The ASGP is a centroid-based prototype generation algorithm that uses 
+    the space spliting mechanism to generate prototypes in the center of 
+    each cluster.
 
     Parameters
     ----------
@@ -420,7 +420,6 @@ class ASGP(SGP2):
 
     References
     ----------
-
     Dayvid V R Oliveira, Guilherme R Magalhaes, George D C Cavalcanti, and
     Tsang Ing Ren. Improved self-generating prototypes algorithm for imbalanced
     datasets. In Tools with Artificial Intelligence (ICTAI), 2012 IEEE 24th 
