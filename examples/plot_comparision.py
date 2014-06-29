@@ -21,7 +21,7 @@ set.
 """
 print(__doc__)
 
-
+# from scikit-learn project
 # Code source: Gael Varoqueux
 #              Andreas Mueller
 # Modified for Documentation merge by Jaques Grobler
