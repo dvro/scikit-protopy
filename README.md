@@ -30,7 +30,14 @@ This is designed to work with:
 
 Install
 =======
-TODO
+
+To install, use::
+
+  sudo python setup.py install
+
+To install via easy\_install, use::
+
+  sudo easy\_install .
 
 
 Important References
