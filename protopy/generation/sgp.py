@@ -78,8 +78,8 @@ class SGP(InstanceReductionMixin):
     --------
     >>> from protopy.generation.sgp import SGP
     >>> import numpy as np
-    >>> X = np.array([[i] for i in range(1,13)])
-    >>> X = X + np.asarray([0.1,0,-0.1,0.1,0,-0.1,0.1,-0.1,0.1,-0.1,0.1,-0.1])
+    >>> X = [np.asarray(range(1,13)) + np.asarray([0.1,0,-0.1,0.1,0,-0.1,0.1,-0.1,0.1,-0.1,0.1,-0.1]]
+    >>> X = np.asarray(X).T
     >>> y = np.array([1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1])
     >>> sgp = SGP()
     >>> sgp.fit(X, y)
@@ -244,8 +244,8 @@ class SGP2(SGP):
     --------
     >>> from protopy.generation.sgp import SGP2
     >>> import numpy as np
-    >>> X = np.array([[i] for i in range(1,13)])
-    >>> X = X + np.asarray([0.1,0,-0.1,0.1,0,-0.1,0.1,-0.1,0.1,-0.1,0.1,-0.1])
+    >>> X = [np.asarray(range(1,13)) + np.asarray([0.1,0,-0.1,0.1,0,-0.1,0.1,-0.1,0.1,-0.1,0.1,-0.1])]
+    >>> X = np.asarray(X).T
     >>> y = np.array([1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1])
     >>> sgp2 = SGP2()
     >>> sgp2.fit(X, y)
