@@ -51,7 +51,7 @@ class ENN(InstanceReductionMixin):
     >>> print(editednn.predict([[-0.6, 0.6]]))
     [1]
     >>> print editednn.reduction_
-    0.25
+    0.75
 
     See also
     --------
