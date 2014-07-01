@@ -80,6 +80,11 @@ class ENN(InstanceReductionMixin):
         classes = np.unique(y)
         self.classes_ = classes
 
+        if self.n_neighbors >= len(X):
+            self.X_ = np.array(X)
+            self.y_ = np.array(y)
+            self.reduction_ = 0.0
+
         mask = np.zeros(y.size, dtype=bool)
 
         tmp_m = np.ones(y.size, dtype=bool)

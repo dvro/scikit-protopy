@@ -44,7 +44,7 @@ class RENN(InstanceReductionMixin):
     --------
     >>> from protopy.selection.renn import RENN
     >>> import numpy as np
-    >>> X = np.array([[-1, 0], [-0.8, 1], [-0.8, -1], [-0.5, 0] , [0.5, 0], [1, 0], [0.8, 1], [0.8, -1]])
+    >>> X = np.array([[-2, 0], [-1.8, 1], [-1.8, -1], [-1.5, 0] , [0.5, 0], [1, 0], [0.8, 1], [0.8, -1]])
     >>> y = np.array([1, 1, 1, 2, 1, 2, 2, 2])
     >>> repeated_enn = RENN()
     >>> repeated_enn.fit(X, y)
