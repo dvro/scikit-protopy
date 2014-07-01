@@ -81,15 +81,21 @@ class ENN(InstanceReductionMixin):
         self.classes_ = classes
 
         mask = np.zeros(y.size, dtype=bool)
-        self.classifier.fit(X, y)
 
+        tmp_m = np.ones(y.size, dtype=bool)
         for i in xrange(y.size):
+            tmp_m[i] = not tmp_m[i]
+            self.classifier.fit(X[tmp_m], y[tmp_m])
             sample, label = X[i], y[i]
+
             if self.classifier.predict(sample) == [label]:
                 mask[i] = not mask[i]
+
+            tmp_m[i] = not tmp_m[i]
 
         self.X_ = np.asarray(X[mask])
         self.y_ = np.asarray(y[mask])
         self.reduction_ = 1.0 - float(len(self.y_)) / len(y)
         return self.X_, self.y_
+
 
