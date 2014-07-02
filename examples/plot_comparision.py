@@ -19,6 +19,7 @@ The plots show training points in solid colors and testing points
 semi-transparent. The lower right shows the classification accuracy on the test
 set.
 """
+
 print(__doc__)
 
 # from scikit-learn project
@@ -45,13 +46,13 @@ from protopy.selection.cnn import CNN
 from protopy.selection.renn import RENN
 from protopy.selection.allknn import AllKNN
 from protopy.selection.tomek_links import TomekLinks
-from protopy.generation.sgp import SGP, SGP2
+from protopy.generation.sgp import SGP, SGP2, ASGP
 
 h = .02  # step size in the mesh
 
 #names = ["Nearest Neighbors", "Linear SVM", "RBF SVM", "Decision Tree",
 #         "Random Forest", "AdaBoost", "Naive Bayes", "LDA", "QDA"]
-names = ["KNN", "ENN", "CNN", "RENN", "AllKNN", "Tomek Links", "SGP", "SGP2"]
+names = ["KNN", "ENN", "CNN", "RENN", "AllKNN", "Tomek Links", "SGP", "SGP2", "ASGP"]
 
 
 classifiers = [
@@ -62,7 +63,8 @@ classifiers = [
     AllKNN(n_neighbors=3),
     TomekLinks(n_neighbors=1),
     SGP(r_min=0.05, r_mis=0.05),
-    SGP2(r_min=0.05, r_mis=0.05)]
+    SGP2(r_min=0.05, r_mis=0.05),
+    ASGP(r_min=0.05, r_mis=0.05)]
 '''
     SVC(kernel="linear", C=0.025),
     SVC(gamma=2, C=1),
