@@ -3,11 +3,12 @@
 
 """
 ======================
-Classifiers Comparison
+Prototype Selection and Generation Comparision
 ======================
-A comparison of a several classifiers in scikit-learn on synthetic datasets.
+A comparison of a several prototype selection and generation algorithms in 
+the project on synthetic datasets.
 The point of this example is to illustrate the nature of decision boundaries
-of different classifiers.
+after applying instance reduction techniques.
 This should be taken with a grain of salt, as the intuition conveyed by
 these examples does not necessarily carry over to real datasets.
 
@@ -16,8 +17,11 @@ linearly and the simplicity of classifiers such as naive Bayes and linear SVMs
 might lead to better generalization.
 
 The plots show training points in solid colors and testing points
-semi-transparent. The lower right shows the classification accuracy on the test
-set.
+semi-transparent. 
+
+The lower right shows:
+- S: score on the traning set.
+- R: reduction ratio.
 """
 
 print(__doc__)
@@ -35,12 +39,6 @@ from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import make_moons, make_circles, make_classification
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.lda import LDA
-from sklearn.qda import QDA
 from protopy.selection.enn import ENN
 from protopy.selection.cnn import CNN
 from protopy.selection.renn import RENN
@@ -50,8 +48,6 @@ from protopy.generation.sgp import SGP, SGP2, ASGP
 
 h = .02  # step size in the mesh
 
-#names = ["Nearest Neighbors", "Linear SVM", "RBF SVM", "Decision Tree",
-#         "Random Forest", "AdaBoost", "Naive Bayes", "LDA", "QDA"]
 names = ["KNN", "ENN", "CNN", "RENN", "AllKNN", "Tomek Links", "SGP", "SGP2", "ASGP"]
 
 
@@ -65,18 +61,10 @@ classifiers = [
     SGP(r_min=0.05, r_mis=0.05),
     SGP2(r_min=0.05, r_mis=0.05),
     ASGP(r_min=0.05, r_mis=0.05)]
-'''
-    SVC(kernel="linear", C=0.025),
-    SVC(gamma=2, C=1),
-    DecisionTreeClassifier(max_depth=5),
-    RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
-    AdaBoostClassifier(),
-    GaussianNB(),
-    LDA(),
-    QDA()]
-'''
+
 X, y = make_classification(n_features=2, n_redundant=0, n_informative=2,
                            random_state=1, n_clusters_per_class=1)
+
 rng = np.random.RandomState(2)
 X += 2 * rng.uniform(size=X.shape)
 linearly_separable = (X, y)
