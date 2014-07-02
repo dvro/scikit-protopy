@@ -22,15 +22,12 @@ semi-transparent.
 The lower right shows:
 - S: score on the traning set.
 - R: reduction ratio.
+
+License: BSD 3 clause
 """
 
 print(__doc__)
 
-# from scikit-learn project
-# Code source: Gael Varoqueux
-#              Andreas Mueller
-# Modified for Documentation merge by Jaques Grobler
-# License: BSD 3 clause
 
 import numpy as np
 import pylab as pl
