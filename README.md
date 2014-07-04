@@ -33,11 +33,11 @@ Install
 
 To install, use::
 
-  sudo python setup.py install
+    sudo python setup.py install
 
 To install via easy\_install, use::
 
-  sudo easy\_install .
+    sudo easy\_install .
 
 
 Important References
