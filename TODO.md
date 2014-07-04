@@ -19,6 +19,7 @@ Algorithms:
 - Prototype Selection Clonal Selection Algorithm (PSCSA)
 
 Examples:
+- Use example/utils.py for dataset generation, imbalance generation, ratio, ...
 - Create individual examples for each algorithm.
 - Create an imbalanced datasets example.
 
