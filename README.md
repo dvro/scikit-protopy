@@ -37,7 +37,7 @@ To install, use::
 
 To install via easy\_install, use::
 
-    sudo easy\_install .
+    sudo easy_install .
 
 
 Important References
