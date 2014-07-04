@@ -2,18 +2,25 @@
 # -*- coding: utf-8 -*-
 
 """
-=======================================================
-Prototype Generation Algorithms over Imbalanced Domains
-=======================================================
-A comparison of a several prototype generation algorithms over the project 
-on synthetic imbalanced datasets.
+==============================================
+Prototype Selection and Generation Comparision
+==============================================
+A comparison of a several prototype selection and generation algorithms in 
+the project on synthetic datasets.
 The point of this example is to illustrate the nature of decision boundaries
+after applying instance reduction techniques.
+This should be taken with a grain of salt, as the intuition conveyed by
+these examples does not necessarily carry over to real datasets.
+
+In particular in high dimensional spaces data can more easily be separated
+linearly and the simplicity of classifiers such as naive Bayes and linear SVMs
+might lead to better generalization.
 
 The plots show training points in solid colors and testing points
 semi-transparent. 
 
 The lower right shows:
-- S: score on the traning set (AUC)
+- S: score on the traning set.
 - R: reduction ratio.
 
 License: BSD 3 clause
@@ -29,7 +36,6 @@ from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import make_moons, make_circles, make_classification
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import roc_curve, auc
 from protopy.selection.enn import ENN
 from protopy.selection.cnn import CNN
 from protopy.selection.renn import RENN
@@ -37,18 +43,19 @@ from protopy.selection.allknn import AllKNN
 from protopy.selection.tomek_links import TomekLinks
 from protopy.generation.sgp import SGP, SGP2, ASGP
 
-import utils as utils
+import utils
 
 h = .02  # step size in the mesh
 
 names = ["KNN", "SGP", "SGP2", "ASGP"]
 
+r_min, r_mis = 0.15, 0.15
 
 classifiers = [
-    KNeighborsClassifier(3),
-    SGP(r_min=0.2, r_mis=0.05),
-    SGP2(r_min=0.2, r_mis=0.05),
-    ASGP(r_min=0.2, r_mis=0.05, pos_class=1)]
+    KNeighborsClassifier(1),
+    SGP(r_min=r_min, r_mis=r_mis),
+    SGP2(r_min=r_min, r_mis=r_mis),
+    ASGP(r_min=r_min, r_mis=r_mis)]
 
 X, y = make_classification(n_features=2, n_redundant=0, n_informative=2,
                            random_state=1, n_clusters_per_class=1)
@@ -68,24 +75,20 @@ i = 1
 for ds in datasets:
     # preprocess dataset, split into training and test part
     X, y = ds
-    X, y = utils.generate_imbalance(X, y)
-
     X = StandardScaler().fit_transform(X)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.4)
-
     x_min, x_max = X[:, 0].min() - .5, X[:, 0].max() + .5
+
     y_min, y_max = X[:, 1].min() - .5, X[:, 1].max() + .5
     xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
                          np.arange(y_min, y_max, h))
 
+    X, y = utils.generate_imbalance(X, y, positive_label=1, ir=1.5)
     # just plot the dataset first
     cm = pl.cm.RdBu
     cm_bright = ListedColormap(['#FF0000', '#0000FF'])
     ax = pl.subplot(len(datasets), len(classifiers) + 1, i)
     # Plot the training points
-    ax.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=cm_bright)
-    # and testing points
-    ax.scatter(X_test[:, 0], X_test[:, 1], c=y_test, cmap=cm_bright, alpha=0.6)
+    ax.scatter(X[:, 0], X[:, 1], c=y, cmap=cm_bright)
     ax.set_xlim(xx.min(), xx.max())
     ax.set_ylim(yy.min(), yy.max())
     ax.set_xticks(())
@@ -95,16 +98,14 @@ for ds in datasets:
     # iterate over classifiers
     for name, clf in zip(names, classifiers):
         ax = pl.subplot(len(datasets), len(classifiers) + 1, i)
-        clf.fit(np.array(X_train), np.array(y_train))
+        clf.fit(np.array(X), np.array(y))
 
-        y_pred = clf.predict(X_test)
-        fp_rate, tp_rate, thresholds = roc_curve(
-            y_test, y_pred, pos_label=1)
-        score = auc(fp_rate, tp_rate)
-
-        red = 0.0
-        if  hasattr(clf, 'reduction_') and clf.reduction_ != None:
-            red = clf.reduction_
+        red = clf.reduction_ if hasattr(clf, 'reduction_') else 0.0
+        if hasattr(clf, 'reduction_'):
+            X_prot, y_prot = clf.X_, clf.y_ 
+        else:
+            X_prot, y_prot = X, y
+        
 
         # Plot the decision boundary. For that, we will assign a color to each
         # point in the mesh [x_min, m_max]x[y_min, y_max].
@@ -117,18 +118,15 @@ for ds in datasets:
         Z = Z.reshape(xx.shape)
         ax.contourf(xx, yy, Z, cmap=cm, alpha=.8)
 
-        # Plot also the training points
-        ax.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=cm_bright)
-        # and testing points
-        ax.scatter(X_test[:, 0], X_test[:, 1], c=y_test, cmap=cm_bright,
-                   alpha=0.6)
+        # Plot also the prototypes
+        ax.scatter(X_prot[:, 0], X_prot[:, 1], c=y_prot, cmap=cm_bright)
 
         ax.set_xlim(xx.min(), xx.max())
         ax.set_ylim(yy.min(), yy.max())
         ax.set_xticks(())
         ax.set_yticks(())
         ax.set_title(name)
-        ax.text(xx.max() - .3, yy.min() + .3, 'S:' + ('%.2f' % score).lstrip('0') + '  R:' + ('%.2f' % red).lstrip('0'),
+        ax.text(xx.max() - .3, yy.min() + .3, 'R:' + ('%.2f' % red).lstrip('0'),
                 size=15, horizontalalignment='right')
         i += 1
 
