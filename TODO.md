@@ -5,6 +5,7 @@ Project:
 
 Design:
 - Make set classifier **kwargs as parameters for all algorithms
+- Pass a KNN instance as `base_estimator` directly (as the pattern followed in BaggingEstimator)
 
 Algorithms:
 - Steady-State Memetic Algorithm (SSMA)
