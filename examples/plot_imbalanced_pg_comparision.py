@@ -46,9 +46,9 @@ names = ["KNN", "SGP", "SGP2", "ASGP"]
 
 classifiers = [
     KNeighborsClassifier(3),
-    SGP(r_min=0.2, r_mis=0.05),
-    SGP2(r_min=0.2, r_mis=0.05),
-    ASGP(r_min=0.2, r_mis=0.05, pos_class=1)]
+    SGP(r_min=0.2, r_mis=0.15),
+    SGP2(r_min=0.2, r_mis=0.15),
+    ASGP(r_min=0.2, r_mis=0.15, pos_class=1)]
 
 X, y = make_classification(n_features=2, n_redundant=0, n_informative=2,
                            random_state=1, n_clusters_per_class=1)
@@ -68,7 +68,7 @@ i = 1
 for ds in datasets:
     # preprocess dataset, split into training and test part
     X, y = ds
-    X, y = utils.generate_imbalance(X, y)
+    X, y = utils.generate_imbalance(X, y, ir=3)
 
     X = StandardScaler().fit_transform(X)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.4)
@@ -95,7 +95,7 @@ for ds in datasets:
     # iterate over classifiers
     for name, clf in zip(names, classifiers):
         ax = pl.subplot(len(datasets), len(classifiers) + 1, i)
-        clf.fit(np.array(X_train), np.array(y_train))
+        clf.fit(X_train, y_train)
 
         y_pred = clf.predict(X_test)
         fp_rate, tp_rate, thresholds = roc_curve(
@@ -105,6 +105,7 @@ for ds in datasets:
         red = 0.0
         if  hasattr(clf, 'reduction_') and clf.reduction_ != None:
             red = clf.reduction_
+        
 
         # Plot the decision boundary. For that, we will assign a color to each
         # point in the mesh [x_min, m_max]x[y_min, y_max].
@@ -117,11 +118,16 @@ for ds in datasets:
         Z = Z.reshape(xx.shape)
         ax.contourf(xx, yy, Z, cmap=cm, alpha=.8)
 
+        if hasattr(clf, 'reduction_'):
+            X_prot, y_prot = clf.X_, clf.y_
+        else:
+            X_prot, y_prot = X_train, y_train
+        
         # Plot also the training points
-        ax.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=cm_bright)
+        ax.scatter(X_prot[:, 0], X_prot[:, 1], c=y_prot, cmap=cm_bright)
         # and testing points
         ax.scatter(X_test[:, 0], X_test[:, 1], c=y_test, cmap=cm_bright,
-                   alpha=0.6)
+                   alpha=0.2)
 
         ax.set_xlim(xx.min(), xx.max())
         ax.set_ylim(yy.min(), yy.max())
@@ -131,6 +137,7 @@ for ds in datasets:
         ax.text(xx.max() - .3, yy.min() + .3, 'S:' + ('%.2f' % score).lstrip('0') + '  R:' + ('%.2f' % red).lstrip('0'),
                 size=15, horizontalalignment='right')
         i += 1
+
 
 figure.subplots_adjust(left=.02, right=.98)
 pl.show()
