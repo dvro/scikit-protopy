@@ -27,6 +27,9 @@ class SSMA(InstanceReductionMixin):
 
     Parameters
     ----------
+    n_neighbors : int, optional (default = 3)
+        Number of neighbors to use by default for :meth:`k_neighbors` queries.
+
     alpha   : float (default = 0.6)
         Parameter that ponderates the fitness function.
 
@@ -38,9 +41,6 @@ class SSMA(InstanceReductionMixin):
 
     chromosomes_count: int (default = 10)
         number of chromosomes used to find the optimal solution.
-
-    fitness : function (default = lambda a, c, r: return a * c - (1.0 - a) * r
-        Fitness functino where a=alpha, c=classification, r=reduction
 
     Attributes
     ----------
