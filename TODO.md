@@ -8,7 +8,7 @@ Design:
 - Pass a KNN instance as `base_estimator` directly (as the pattern followed in BaggingEstimator)
 
 Algorithms:
-- Steady-State Memetic Algorithm (SSMA)
+- Steady-State Memetic Algorithm (SSMA) - SETUP FITNESS OPTIONS PARAMETER
 - One-Sided Selection (OSS)
 - Learning Vector Quantization 1, 2.1, 3 (LVQ)
 - Integrated Concept Prototype Learner 1, 2, 3 e 4 (ICPL)
