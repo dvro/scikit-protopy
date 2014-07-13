@@ -41,11 +41,12 @@ from protopy.selection.cnn import CNN
 from protopy.selection.renn import RENN
 from protopy.selection.allknn import AllKNN
 from protopy.selection.tomek_links import TomekLinks
+from protopy.selection.ssma import SSMA
 from protopy.generation.sgp import SGP, SGP2, ASGP
 
 h = .02  # step size in the mesh
 
-names = ["KNN", "ENN", "CNN", "RENN", "AllKNN", "Tomek Links", "SGP", "SGP2", "ASGP"]
+names = ["KNN", "ENN", "CNN", "RENN", "AllKNN", "Tomek Links", "SGP", "SGP2", "ASGP", "SSMA"]
 
 
 classifiers = [
@@ -57,7 +58,8 @@ classifiers = [
     TomekLinks(n_neighbors=1),
     SGP(r_min=0.05, r_mis=0.05),
     SGP2(r_min=0.05, r_mis=0.05),
-    ASGP(r_min=0.05, r_mis=0.05)]
+    ASGP(r_min=0.05, r_mis=0.05),
+    SSMA()]
 
 X, y = make_classification(n_features=2, n_redundant=0, n_informative=2,
                            random_state=1, n_clusters_per_class=1)

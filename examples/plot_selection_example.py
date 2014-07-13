@@ -8,8 +8,8 @@ from protopy.selection.cnn import CNN
 from protopy.selection.renn import RENN
 from protopy.selection.allknn import AllKNN
 from protopy.selection.tomek_links import TomekLinks
+from protopy.selection.ssma import SSMA
 
-f, subfig = plt.subplots(3,2)
 
 
 
@@ -33,14 +33,13 @@ random.shuffle(z)
 X, y = zip(*z)
 X, y = np.asarray(X), np.asarray(y)
 
-
-
-
-algorithms = [ENN(), RENN(), AllKNN(), TomekLinks(), CNN()]
-titles = ['ENN','RENN', 'AllKNN', 'TomekLinks', 'CNN' ]
+algorithms = [ENN(), RENN(), AllKNN(), TomekLinks(), CNN(), SSMA(max_loop=500)]
+titles = ['ENN','RENN', 'AllKNN', 'TomekLinks', 'CNN', 'SSMA']
 index = 0
 
-for i in range(3):
+f, subfig = plt.subplots(4,2)
+
+for i in range(4):
     for j in range(2):
         if i == 0 and j == 0:
             subfig[i][j].plot(X[y==0].T[0], X[y==0].T[1], 'bs', X[y==1].T[0], X[y==1].T[1],'ro')
