@@ -84,6 +84,7 @@ class ENN(InstanceReductionMixin):
             self.X_ = np.array(X)
             self.y_ = np.array(y)
             self.reduction_ = 0.0
+            return self.X_, self.y_
 
         mask = np.zeros(y.size, dtype=bool)
 
