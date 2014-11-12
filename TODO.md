@@ -1,5 +1,10 @@
 TODO LIST
 
+Urgent:
+- Make it compatible with the sklearn 0.16.0
+- http://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/
+
+
 Design:
 - Make set classifier **kwargs as parameters for all algorithms
 - Pass a KNN instance as `base_estimator` directly (as the pattern followed in BaggingEstimator)

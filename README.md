@@ -22,7 +22,7 @@ Dependencies
 
 This is designed to work with:
 - Python 2.6+
-- scikit-learn >= 0.14.1
+- scikit-learn == 0.14.1
 - Numpy >= 1.3
 - SciPy >= 0.7
 - Matplotlib >= 0.99.1. (for examples, only)

@@ -50,14 +50,14 @@ names = ["KNN", "ENN", "CNN", "RENN", "AllKNN", "Tomek Links", "SGP", "SGP2", "A
 
 
 classifiers = [
-    KNeighborsClassifier(3),
+#    KNeighborsClassifier(3),
     ENN(n_neighbors=3),
     CNN(n_neighbors=3),
-    RENN(n_neighbors=3),
-    AllKNN(n_neighbors=3),
-    TomekLinks(n_neighbors=1),
-    SGP(r_min=0.05, r_mis=0.05),
-    SGP2(r_min=0.05, r_mis=0.05),
+#    RENN(n_neighbors=3),
+#    AllKNN(n_neighbors=3),
+#    TomekLinks(n_neighbors=1),
+#    SGP(r_min=0.05, r_mis=0.05),
+#    SGP2(r_min=0.05, r_mis=0.05),
     ASGP(r_min=0.05, r_mis=0.05),
     SSMA()]
 
