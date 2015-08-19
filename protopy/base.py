@@ -1,15 +1,13 @@
-"""Base and mixin classes for instance reduction techniques"""
+﻿"""Base and mixin classes for instance reduction techniques"""
 # Author: Dayvid Victor <dvro@cin.ufpe.br>
 # License: BSD Style
 import warnings
 from abc import ABCMeta, abstractmethod
 
-import numpy as np
-from scipy.sparse import csr_matrix, issparse
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.neighbors.classification import KNeighborsClassifier
 
-from sklearn.utils import safe_asarray, atleast2d_or_csr, check_arrays
+from sklearn.utils import check_array
 from sklearn.externals import six
 
 
@@ -121,7 +119,7 @@ class InstanceReductionMixin(InstanceReductionBase, ClassifierMixin):
         classifier, it should be explicited overwritten and explained
         in the documentation.
         """
-        X = atleast2d_or_csr(X)
+        X = check_array(X)
         if not hasattr(self, "X_") or self.X_ is None:
             raise AttributeError("Model has not been trained yet.")
 

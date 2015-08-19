@@ -9,10 +9,9 @@ Steady-State Memetic Algorithm
 
 import random
 import numpy as np
-from scipy import sparse as sp
 
-from sklearn.externals.six.moves import xrange
-from sklearn.utils.validation import check_arrays, atleast2d_or_csr
+
+from sklearn.utils.validation import check_X_y
 from sklearn.neighbors.classification import KNeighborsClassifier
 
 from ..base import InstanceReductionMixin
@@ -298,7 +297,7 @@ class SSMA(InstanceReductionMixin):
 
 
     def reduce_data(self, X, y):
-        X, y = check_arrays(X, y, sparse_format="csr")
+        X, y = check_X_y(X, y, accept_sparse="csr")
 
         classes = np.unique(y)
         self.classes_ = classes

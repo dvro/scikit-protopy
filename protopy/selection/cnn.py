@@ -8,10 +8,9 @@ Condensed-Nearest Neighbors
 # License: BSD 3 clause
 
 import numpy as np
-from scipy import sparse as sp
 
-from sklearn.externals.six.moves import xrange
-from sklearn.utils.validation import check_arrays, atleast2d_or_csr
+
+from sklearn.utils.validation import check_X_y
 from sklearn.neighbors.classification import KNeighborsClassifier
 
 from ..base import InstanceReductionMixin
@@ -74,7 +73,7 @@ class CNN(InstanceReductionMixin):
 
     def reduce_data(self, X, y):
         
-        X, y = check_arrays(X, y, sparse_format="csr")
+        X, y = check_X_y(X, y, accept_sparse="csr")
 
         if self.classifier == None:
             self.classifier = KNeighborsClassifier(n_neighbors=self.n_neighbors)
